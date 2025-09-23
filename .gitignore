@@ -1,0 +1,33 @@
+# General ignores for any project
+.DS_Store
+*.log
+
+# IDE and editor folders
+.vscode/
+.idea/
+
+# Local Environment Variables
+# IMPORTANT: Never commit your secret keys!
+.env
+.env.local
+.env.production
+.env.development
+
+# Node.js dependencies
+# These are installed via 'pnpm install' so we don't need to track them
+node_modules/
+
+# PNPM specific files
+pnpm-debug.log
+
+# Next.js (Client) specific ignores
+# Build artifacts and cache
+apps/client/.next/
+apps/client/out/
+
+# NestJS (Server) specific ignores
+# Build artifacts
+apps/server/dist/
+
+# TypeScript cache file
+tsconfig.tsbuildinfo
