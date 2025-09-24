@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy everything
+COPY . .
+
+# Install dependencies in the server directory
+RUN npm install -g pnpm @nestjs/cli
+RUN cd apps/server && pnpm install --frozen-lockfile
+
+WORKDIR /app/apps/server
+
+# Generate Prisma client
+RUN npx prisma generate
+
+EXPOSE 5000
+
+CMD ["npm", "run", "start:dev"]
