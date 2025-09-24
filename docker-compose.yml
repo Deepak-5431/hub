@@ -1,26 +1,26 @@
-version: '3.8'
-
 services:
-  # Our NestJS Backend Service
   server:
     build:
-      context: ./apps/server # Tells Docker to use the Dockerfile in the server folder
+      context: .
+      dockerfile: Dockerfile.server
     ports:
-      - "5000:5000" # Maps container port 5000 to your local machine's port 5000
+      - "5000:5000"
     volumes:
-      - ./apps/server/src:/usr/src/app/src # This enables hot-reloading for your code
+      - ./apps/server/src:/app/apps/server/src
+      - /app/apps/server/node_modules
     env_file:
-      - ./apps/server/.env # Loads your secret keys
+      - ./apps/server/.env
+    environment:
+      - NODE_ENV=development
     depends_on:
-      - db # Makes the server wait for the database to start first
+      - db
 
-  # Our PostgreSQL + PostGIS Database Service
   db:
-    image: postgis/postgis # A special image with PostGIS pre-installed
+    image: postgis/postgis
     ports:
-      - "5432:5432" # Exposes the default PostgreSQL port
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data # Keeps your database data safe
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password123

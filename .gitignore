@@ -31,3 +31,4 @@ apps/server/dist/
 
 # TypeScript cache file
 tsconfig.tsbuildinfo
+/node_modules/.prisma/client
