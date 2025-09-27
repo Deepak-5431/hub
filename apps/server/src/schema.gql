@@ -1,0 +1,26 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthModel {
+  message: String!
+}
+
+type Query {
+  hello: String!
+}
+
+type Mutation {
+  signup(createUserInput: CreateUserInput!): AuthModel!
+  login(loginInput: LoginInput!): AuthModel!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
