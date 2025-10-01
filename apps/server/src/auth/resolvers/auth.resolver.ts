@@ -1,10 +1,9 @@
 // File: apps/server/src/auth/auth.resolver.ts
 
 import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql'; 
-import { AuthService } from './auth.service';
-import { CreateUserInput } from './dto/create-user.input/create-user.input';
-import { LoginInput } from './dto/login.input/login.input';
-import { AuthModel } from './models/auth.model/auth.model';
+import { AuthService } from '../services/auth.service'
+import { CreateUserInput } from '../dto/requests/create-user.input';
+import { LoginInput } from '../dto/requests/login.input';
 import { Response } from 'express';
 
 
