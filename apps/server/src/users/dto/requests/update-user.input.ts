@@ -6,11 +6,9 @@ import { IsOptional,IsString,MinLength } from "class-validator";
 @InputType()
 
 export class UpdateUserInput extends PartialType(CreateUserInput){
-  @Field({nullable:true})
-  @IsString()
+  @Field(() => String, { nullable: true })   @IsString()
   @MinLength(6)
   @IsOptional()
-
   password?: string | undefined;
 
 }

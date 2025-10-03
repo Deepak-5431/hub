@@ -9,8 +9,7 @@ export class UserEntity{
   @Field()
   email: string;
 
-  @Field({nullable: true})
-  name: string;
+ 
 
   @Field()
   updatedAt: Date;

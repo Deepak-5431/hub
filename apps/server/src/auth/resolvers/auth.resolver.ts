@@ -1,47 +1,69 @@
-// File: apps/server/src/auth/auth.resolver.ts
-
-import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql'; 
-import { AuthService } from '../services/auth.service'
-import { CreateUserInput } from '../dto/requests/create-user.input';
+// auth/resolvers/auth.resolver.ts
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { AuthService } from '../services/auth.service';
 import { LoginInput } from '../dto/requests/login.input';
+import { CreateUserInput } from '../dto/requests/create-user.input';
+import { RefreshTokenInput } from '../dto/requests/refresh-token.input';
+import { AuthResponseDto } from '../dto/responses/auth-response.dto';
+import { Public } from 'src/core/decorators/public.decorator';
+import { UsePipes, ValidationPipe, BadRequestException } from '@nestjs/common';
 import { Response } from 'express';
 
-
-@Resolver()
+@Resolver(() => AuthResponseDto)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @Query(() => String)
-  hello() {
-    return 'world!';
-  }
-
-  @Mutation(() => AuthModel)
-  async signup(
-    @Args('createUserInput') createUserInput: CreateUserInput,
+  @Public()
+  @Mutation(() => AuthResponseDto)
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async register(
+    @Args('registerInput') registerInput: CreateUserInput,
     @Context() context: { res: Response },
-  ) {
-    await this.authService.signup(
-      createUserInput.email,
-      createUserInput.password,
-      context.res,
-    );
-    return { message: 'Signup successful' };
+  ): Promise<AuthResponseDto> {
+    try {
+      const authResponse = await this.authService.register(registerInput);
+      this.authService.setAuthCookies(context.res, authResponse);
+      return authResponse;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  @Mutation(() => AuthModel)
+  @Public()
+  @Mutation(() => AuthResponseDto)
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async login(
     @Args('loginInput') loginInput: LoginInput,
     @Context() context: { res: Response },
-  ) {
-    const user = await this.authService.validateUser(
-      loginInput.email,
-      loginInput.password,
-    );
-    if (!user) {
-      throw new Error('Invalid credentials');
+  ): Promise<AuthResponseDto> {
+    try {
+      const authResponse = await this.authService.login(loginInput);
+      this.authService.setAuthCookies(context.res, authResponse);
+      return authResponse;
+    } catch (error) {
+      throw new BadRequestException('Invalid credentials');
     }
-    await this.authService.login(user, context.res);
-    return { message: 'Login successful' };
+  }
+
+  @Public()
+  @Mutation(() => AuthResponseDto)
+  async refreshTokens(
+    @Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput,
+    @Context() context: { res: Response },
+  ): Promise<AuthResponseDto> {
+    try {
+      const authResponse = await this.authService.refreshTokens(
+        refreshTokenInput.refreshToken,
+      );
+      this.authService.setAuthCookies(context.res, authResponse);
+      return authResponse;
+    } catch (error) {
+      throw new BadRequestException('Token refresh failed');
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Context() context: { res: Response }): Promise<boolean> {
+    return this.authService.logout(context.res);
   }
 }

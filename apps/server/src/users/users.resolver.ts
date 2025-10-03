@@ -6,7 +6,8 @@ import { UpdateUserInput } from './dto/requests/update-user.input';
 import { CreateUserInput } from 'src/auth/dto/requests/create-user.input';
 import { UserResponseDto } from './dto/responses/user-response.dto';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
-import { AdminGuard } from '../auth/guards/admin.guard';
+
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { CurrentUser } from '../core/decorators/current-user.decorator';
 import { Public } from '../core/decorators/public.decorator';
 import { UseGuards,UsePipes,ValidationPipe,ParseUUIDPipe,BadRequestException,HttpException } from '@nestjs/common';
