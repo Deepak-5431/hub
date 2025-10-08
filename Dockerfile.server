@@ -19,5 +19,4 @@ RUN npx prisma generate
 
 EXPOSE 5000
 
-# Use nodemon for reliable file watching in Docker
-CMD ["nodemon", "--watch", "src", "--ext", "ts,json", "--exec", "nest", "start", "--watch"]
+CMD ["sh", "-c", "npx prisma generate && nodemon --watch src --watch prisma --ext ts,json,prisma --exec 'nest start --watch'"]

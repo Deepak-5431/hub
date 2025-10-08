@@ -5,8 +5,21 @@
 type UserEntity {
   id: ID!
   email: String!
-  updatedAt: DateTime!
+  name: String
+  username: String
+  avatar: String
+  bio: String
+  website: String
+  location: String
+  isVerified: Boolean!
+  isPrivate: Boolean!
+  isActive: Boolean!
+  followersCount: Float!
+  followingCount: Float!
+  postsCount: Float!
   createdAt: DateTime!
+  updatedAt: DateTime!
+  lastActiveAt: DateTime!
 }
 
 """
