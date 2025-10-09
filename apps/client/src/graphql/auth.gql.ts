@@ -8,9 +8,6 @@ export const REGISTER_MUTATION = gql`
         email
         createdAt
       }
-      accessToken
-      refreshToken
-      expiresIn
     }
   }
 `;
@@ -23,9 +20,6 @@ export const LOGIN_MUTATION = gql`
         email
         createdAt
       }
-      accessToken
-      refreshToken
-      expiresIn
     }
   }
 `;

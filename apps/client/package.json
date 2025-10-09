@@ -12,6 +12,7 @@
     "@apollo/client": "^4.0.7",
     "@apollo/client-integration-nextjs": "^0.13.2",
     "@hookform/resolvers": "^5.2.2",
+    "axios": "^1.12.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "graphql": "^16.11.0",
