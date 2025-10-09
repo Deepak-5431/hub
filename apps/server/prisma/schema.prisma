@@ -1,7 +1,5 @@
-
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -10,9 +8,190 @@ datasource db {
 }
 
 model User {
-  id  String @id @default(uuid())
-  email String @unique
+  id       String  @id @default(uuid())
+  email    String  @unique
   password String
+  name     String?
+  username String? @unique
+  avatar   String?
+  bio      String? @db.Text
+  website  String?
+  location String?
+
+  // Social metrics
+  followersCount Int @default(0)
+  followingCount Int @default(0)
+  postsCount     Int @default(0)
+
+  // Account status
+  isVerified Boolean @default(false)
+  isPrivate  Boolean @default(false)
+  isActive   Boolean @default(true)
+
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastActiveAt DateTime @default(now())
+
+  // Relations
+  posts                 Post[]
+  comments              Comment[]
+  likes                 Like[]
+  stories               Story[]
+  followers             Follow[]       @relation("UserFollows")
+  following             Follow[]       @relation("UserFollowers")
+  sentNotifications     Notification[] @relation("NotificationSender")
+  receivedNotifications Notification[] @relation("NotificationReceiver")
+  savedPosts            SavedPost[] // Added missing relation
+
+  @@map("users")
+}
+
+model Post {
+  id       String  @id @default(uuid())
+  caption  String? @db.Text
+  location String?
+
+  // Media
+  imageUrls String[]
+  videoUrl  String?
+  mediaType MediaType @default(IMAGE)
+
+  // Engagement metrics
+  likesCount    Int @default(0)
+  commentsCount Int @default(0)
+  viewsCount    Int @default(0)
+
+  // Privacy & status
+  isArchived Boolean @default(false)
+  isHidden   Boolean @default(false)
+
+  // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  author   User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+  comments Comment[]
+  likes    Like[]
+  tags     PostTag[]
+  savedBy  SavedPost[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id         String  @id @default(uuid())
+  content    String  @db.Text
+  author     User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   String
+  post       Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId     String
+  parentId   String?
+  likesCount Int     @default(0)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Self-relation for nested comments
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies Comment[] @relation("CommentReplies")
+
+  //  Added missing relation
+  likes Like[]
+
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+  @@map("likes")
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  follower    User     @relation("UserFollows", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@map("follows")
+}
+
+model Story {
+  id         String    @id @default(uuid())
+  mediaUrl   String
+  mediaType  MediaType
+  author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   String
+  expiresAt  DateTime
+  viewsCount Int       @default(0)
+  createdAt  DateTime  @default(now())
+
+  @@map("stories")
+}
+
+model SavedPost {
+  id      String   @id @default(uuid())
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId  String
+  savedAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@map("saved_posts")
+}
+
+model PostTag {
+  id    String @id @default(uuid())
+  name  String
+  posts Post[]
+
+  @@unique([name])
+  @@map("post_tags")
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  type       NotificationType
+  sender     User             @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId   String
+  receiver   User             @relation("NotificationReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId String
+  postId     String?
+  commentId  String?
+  isRead     Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+// Enums
+enum MediaType {
+  IMAGE
+  VIDEO
+  CAROUSEL
+}
+
+enum NotificationType {
+  FOLLOW
+  LIKE
+  COMMENT
+  MENTION
+  SHARE
 }

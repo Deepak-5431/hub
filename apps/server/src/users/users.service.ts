@@ -30,8 +30,8 @@ export class UsersService {
       data: {
         email: createUserInput.email,
         password: hashedPassword,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        name: createUserInput.name || null,
+        
       }
     });
 
