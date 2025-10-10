@@ -1,48 +1,45 @@
+// hooks/useAuth.ts - FIXED IMPORT
 import { useEffect } from "react";
 import { useQuery } from "@apollo/client/react";
 import { ME_QUERY } from "@/graphql/auth.gql";
 import { useAuthStore } from "@/store/authStore";
-import { MeQueryResult,User} from '../types/graphql'
+import { MeQueryResult } from '../types/graphql'
 
-//checking for user
 export const useAuth = () => {
-  const { setUser,setLoading,logout } = useAuthStore();
+  const { setUser, logout, user, isAuthenticated, isLoading } = useAuthStore();
 
-  const { data,loading,error } = useQuery<MeQueryResult>(ME_QUERY,{
+  // Skip on auth pages
+  const isAuthPage = typeof window !== 'undefined' && 
+    ['/login', '/register'].includes(window.location.pathname);
+
+  const { data, loading, error } = useQuery<MeQueryResult>(ME_QUERY, {
     fetchPolicy: 'network-only',
-    errorPolicy:'all',
+    errorPolicy: 'ignore',
+    skip: isAuthPage,
   });
 
-  useEffect(()=>{
-  if(!loading){
-   if(data?.me){
-     setUser({
-      id:data.me.id,
-      email: data.me.email,
-      createdAt: data.me.createdAt,
-      updatedAt: data.me.updatedAt,
+  useEffect(() => {
+    if (!loading) {
+      if (data?.me) {
+        setUser(data.me);
+      } else {
+        setUser(null);
+      }
+    }
+  }, [data, loading, setUser]);
 
-      
-     })
-   }else{
-    setUser(null);
-   }
-  }
-},[data,loading,setUser]);
+  useEffect(() => {
+    if (error) {
+      console.log("Auth check: User not authenticated (this is normal)");
+      setUser(null);
+    }
+  }, [error, setUser]);
 
-
-useEffect(()=>{
-  if(error){
-    console.error("error is this",error);
-    setUser(null);
-  }
-},[error,setUser])
-
-return {
-  user: useAuthStore((state) => state.user),
-  authenticated: useAuthStore((state) => state.isAuthenticated),
-  isLoading: useAuthStore((state)=> state.isLoading),
-  logout,
-}
-}
-
+  return {
+    user,
+    authenticated: isAuthenticated,
+    isLoading: isAuthPage ? false : (loading || isLoading),
+    setUser,
+    logout,
+  };
+};
