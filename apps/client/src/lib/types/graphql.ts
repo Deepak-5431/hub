@@ -62,7 +62,7 @@ export interface Comment {
 export interface CreatePostInput {
   title?: string;
   content?: string;
-  imageUrl: string;       // upload images to Cloudinary/S3
+  imageUrl: string;       
 }
 
 export interface CreateCommentInput {

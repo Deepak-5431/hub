@@ -33,12 +33,9 @@ const RegisterForm = () => {
             email: formData.email,
             password: formData.password,
             name: formData.name || undefined,
-           // username: formData.username || undefined,
           }
         }
       });
-
-      console.log("Registration successful:", data);
 
       if (data?.register?.user) {
         setUser(data.register.user);
@@ -46,7 +43,7 @@ const RegisterForm = () => {
       }
     } catch (err: any) {
       console.error("Registration error:", err);
-      if (err.message.includes("already exists")) {
+      if (err.message?.includes?.("already exists")) {
         setError("email", {
           type: "manual",
           message: "User with this email already exists"
@@ -61,104 +58,118 @@ const RegisterForm = () => {
   };
 
   return (
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <div className="rounded-md shadow-sm space-y-4">
-        {/* Name Input */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            {...registerField("name")}
-            className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-            placeholder="Enter your full name"
-          />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
-          </label>
-          <input
-            id="email"
-            type="email"
-            {...registerField("email")}
-            className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-            placeholder="Enter your email"
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            {...registerField("password")}
-            className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-            placeholder="Create a password (min. 6 characters)"
-          />
-          {errors.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-          )}
-        </div>
-
-        {/* Confirm Password Input */}
-        <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-            Confirm Password
-          </label>
-          <input
-            id="confirmPassword"
-            type="password"
-            {...registerField("confirmPassword")}
-            className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-            placeholder="Confirm your password"
-          />
-          {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
-          )}
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#030417] via-[#061022] to-[#08010f] relative overflow-hidden">
+      {/* Grid overlay */}
+      <div className="absolute inset-0 pointer-events-none -z-20">
+        <svg className="w-full h-full opacity-10" viewBox="0 0 600 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M24 0H0V24" stroke="rgba(255,255,255,0.03)" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)"/>
+        </svg>
       </div>
 
-      {/* Root Error Message */}
-      {errors.root && (
-        <div className="rounded-md bg-red-50 p-4">
-          <div className="text-sm text-red-700">
-            <p>{errors.root.message}</p>
-          </div>
-        </div>
-      )}
-
-      {/* GraphQL Error Message */}
-      {error && !errors.root && (
-        <div className="rounded-md bg-red-50 p-4">
-          <div className="text-sm text-red-700">
-            <p>{error.message}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Submit Button */}
-      <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-150 ease-in-out"
-        >
-          {loading ? "Creating account..." : "Create account"}
-        </button>
+      {/* Radial neon glows */}
+      <div className="absolute -z-10 inset-0">
+        <div className="absolute -left-40 -top-24 w-96 h-96 rounded-full bg-cyan-600/10 blur-3xl animate-pulse" />
+        <div className="absolute -right-28 -bottom-20 w-80 h-80 rounded-full bg-purple-600/8 blur-3xl animate-pulse delay-1500" />
       </div>
-    </form>
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-10 left-8 w-2 h-2 bg-cyan-300 rounded-full opacity-60 animate-pulse" />
+        <div className="absolute top-24 right-28 w-1.5 h-1.5 bg-purple-300 rounded-full opacity-50 animate-pulse" />
+        <div className="absolute bottom-32 left-1/2 w-1.5 h-1.5 bg-white/30 rounded-full opacity-40 animate-pulse" />
+      </div>
+
+      {/* Card (kept existing card styles) */}
+      <div className="relative z-10 w-full max-w-md mx-auto px-4">
+        <div className="bg-gradient-to-br from-[#071029] via-[#08122a] to-[#0d0720] border border-white/6 rounded-2xl p-6 shadow-2xl ring-1 ring-cyan-600/8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="text-3xl transform-gpu text-cyan-400 animate-bounce">⚡</div>
+            <div>
+              <h2 className="text-2xl font-extrabold text-slate-100">Create your account</h2>
+            </div>
+          </div>
+
+          <form className="mt-4 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-slate-300">Full Name</label>
+              <input
+                id="name"
+                type="text"
+                {...registerField("name")}
+                placeholder="Kohana Sakura"
+                className="w-full px-4 py-2 rounded-lg bg-[#0b0f1a] border border-transparent focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 text-slate-100 shadow-sm placeholder-slate-500 transition"
+              />
+              {errors.name && <p className="text-xs text-rose-400 mt-1">{errors.name.message}</p>}
+            </div>
+
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-slate-300">Email Address</label>
+              <input
+                id="email"
+                type="email"
+                {...registerField("email")}
+                placeholder="you@neo.dev"
+                className="w-full px-4 py-2 rounded-lg bg-[#0b0f1a] border border-transparent focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 text-slate-100 shadow-sm placeholder-slate-500 transition"
+              />
+              {errors.email && <p className="text-xs text-rose-400 mt-1">{errors.email.message}</p>}
+            </div>
+
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-slate-300">Password</label>
+              <input
+                id="password"
+                type="password"
+                {...registerField("password")}
+                placeholder="Create a secure password"
+                className="w-full px-4 py-2 rounded-lg bg-[#0b0f1a] border border-transparent focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/20 text-slate-100 shadow-sm placeholder-slate-500 transition"
+              />
+              {errors.password && <p className="text-xs text-rose-400 mt-1">{errors.password.message}</p>}
+            </div>
+
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-slate-300">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                {...registerField("confirmPassword")}
+                placeholder="Confirm your password"
+                className="w-full px-4 py-2 rounded-lg bg-[#0b0f1a] border border-transparent focus:border-purple-300 focus:ring-2 focus:ring-purple-300/20 text-slate-100 shadow-sm placeholder-slate-500 transition"
+              />
+              {errors.confirmPassword && <p className="text-xs text-rose-400 mt-1">{errors.confirmPassword.message}</p>}
+            </div>
+
+            {errors.root && (
+              <div className="rounded-md bg-rose-900/20 p-3 text-sm text-rose-200">
+                {errors.root.message}
+              </div>
+            )}
+
+            {error && !errors.root && (
+              <div className="rounded-md bg-rose-900/20 p-3 text-sm text-rose-200">
+                {error.message}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 rounded-lg font-semibold text-black bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-500 hover:scale-[1.02] transform transition disabled:opacity-60 disabled:cursor-not-allowed shadow-[0_10px_30px_rgba(59,130,246,0.12)]"
+            >
+              {loading ? "Creating..." : "Create account"}
+            </button>
+          </form>
+
+          <div className="mt-4 text-center text-sm text-slate-400">
+            Already have an account? <a href="/login" className="text-cyan-300 font-medium hover:underline">Sign in</a>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

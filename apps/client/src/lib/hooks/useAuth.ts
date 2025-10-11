@@ -8,7 +8,6 @@ import { MeQueryResult } from '../types/graphql'
 export const useAuth = () => {
   const { setUser, logout, user, isAuthenticated, isLoading } = useAuthStore();
 
-  // Skip on auth pages
   const isAuthPage = typeof window !== 'undefined' && 
     ['/login', '/register'].includes(window.location.pathname);
 

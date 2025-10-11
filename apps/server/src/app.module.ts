@@ -11,6 +11,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'; 
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'; 
 import { join } from 'path';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { join } from 'path';
     }),
     UsersModule,
     AuthModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
