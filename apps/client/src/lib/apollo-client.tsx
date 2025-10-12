@@ -6,7 +6,7 @@
   function makeClient() {
    const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/",
-     credentials: 'same-origin'
+     credentials: 'include'
    });
  
   return new ApolloClient({

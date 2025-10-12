@@ -22,10 +22,12 @@ export const useAuth = () => {
       if (data?.me) {
         setUser(data.me);
       } else {
+         if (error) {
         setUser(null);
+         }
       }
     }
-  }, [data, loading, setUser]);
+  }, [data, loading,error, setUser]);
 
   useEffect(() => {
     if (error) {
@@ -36,7 +38,7 @@ export const useAuth = () => {
 
   return {
     user,
-    authenticated: isAuthenticated,
+    authenticated: !!user, 
     isLoading: isAuthPage ? false : (loading || isLoading),
     setUser,
     logout,
