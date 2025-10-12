@@ -40,18 +40,8 @@ const LoginForm = () => {
         setUser(data.login.user);
         window.location.href = "/dashboard";
       }
-    } catch (err: any) {
-      if (err.message.includes("Invalid credentials")) {
-        setError("root", {
-          type: "manual",
-          message: "Invalid email or password"
-        });
-      } else {
-        setError("root", {
-          type: "manual",
-          message: "Login failed. Please try again."
-        });
-      }
+    } catch (err:unknown) {
+     console.log("error is",err);
     }
   };
 
@@ -116,12 +106,13 @@ const LoginForm = () => {
           </form>
 
           <div className="mt-4 text-center text-sm text-slate-400">
-            Don't have an account? <a href="/register" className="text-cyan-300 font-medium hover:underline">Create one</a>
+            Dont have an account? <a href="/register" className="text-cyan-300 font-medium hover:underline">Create one</a>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 export default LoginForm;

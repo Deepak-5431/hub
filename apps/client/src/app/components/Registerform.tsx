@@ -41,19 +41,8 @@ const RegisterForm = () => {
         setUser(data.register.user);
         window.location.href = "/login";
       }
-    } catch (err: any) {
+    } catch (err:unknown) {
       console.error("Registration error:", err);
-      if (err.message?.includes?.("already exists")) {
-        setError("email", {
-          type: "manual",
-          message: "User with this email already exists"
-        });
-      } else {
-        setError("root", {
-          type: "manual",
-          message: "Registration failed. Please try again."
-        });
-      }
     }
   };
 
