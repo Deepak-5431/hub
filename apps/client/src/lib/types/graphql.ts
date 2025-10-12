@@ -9,6 +9,18 @@ export interface User {
   username?: string;
 }
 
+export interface CreateUserInput {
+  email: string;
+  password: string;
+  name?: string;
+  username?: string;
+}
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
 export interface MeQueryResult {
   me: User;
 }
@@ -16,18 +28,13 @@ export interface MeQueryResult {
 export interface LoginMutationResult {
   login: {
     user: User;
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
   };
 }
 
 export interface RegisterMutationResult {
   register: {
     user: User;
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
+
   };
 }
 
@@ -55,7 +62,7 @@ export interface Comment {
 export interface CreatePostInput {
   title?: string;
   content?: string;
-  imageUrl: string;       // upload images to Cloudinary/S3
+  imageUrl: string;       
 }
 
 export interface CreateCommentInput {

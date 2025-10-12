@@ -42,7 +42,10 @@ model User {
   following             Follow[]       @relation("UserFollowers")
   sentNotifications     Notification[] @relation("NotificationSender")
   receivedNotifications Notification[] @relation("NotificationReceiver")
-  savedPosts            SavedPost[] // Added missing relation
+  savedPosts            SavedPost[] 
+
+  participants          Participant[]  
+  sentMessages          Message[]  
 
   @@map("users")
 }
@@ -194,4 +197,77 @@ enum NotificationType {
   COMMENT
   MENTION
   SHARE
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  FILE
+  SYSTEM
+}
+
+enum ConversationType {
+  DIRECT
+  GROUP
+}
+
+model Conversation {
+  id           String       @id @default(uuid())
+  title        String?      // For group chats
+  type         ConversationType @default(DIRECT)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  lastMessage  String?
+  lastMessageAt DateTime?
+  
+  // Relations
+  participants Participant[]
+  messages     Message[]
+  
+  @@map("conversations")
+}
+
+model Participant {
+  id             String   @id @default(uuid())
+  userId         String
+  conversationId String
+  role          ParticipantRole @default(MEMBER)
+  joinedAt      DateTime @default(now())
+  leftAt        DateTime? // When user left group
+  mutedUntil    DateTime? // Mute notifications until
+  
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation  Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, conversationId])
+  @@map("participants")
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  content        String
+  type          MessageType @default(TEXT)
+  conversationId String
+  senderId       String
+  readBy         String[] // Array of user IDs who read the message
+  repliedToId   String?   // For message replies
+  deletedAt     DateTime? // Soft delete
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Relations
+  conversation  Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender        User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  repliedTo     Message? @relation("MessageReplies", fields: [repliedToId], references: [id])
+  replies       Message[] @relation("MessageReplies")
+  
+  @@map("messages")
+}
+
+enum ParticipantRole {
+  MEMBER
+  ADMIN
+  OWNER
 }
