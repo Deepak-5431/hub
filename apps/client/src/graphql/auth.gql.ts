@@ -7,7 +7,7 @@ export const REGISTER_MUTATION = gql`
         id
         email
         name
-        createdAt
+        
       }
     }
   }
@@ -20,7 +20,7 @@ export const LOGIN_MUTATION = gql`
         id
         email
         name
-        createdAt
+        
       }
     }
   }
@@ -47,8 +47,7 @@ export const ME_QUERY = gql`
     me {
       id
       email
-      createdAt
-      updatedAt
+      
     }
   }
 `;

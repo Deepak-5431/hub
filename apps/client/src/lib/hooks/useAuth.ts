@@ -22,12 +22,12 @@ export const useAuth = () => {
       if (data?.me) {
         setUser(data.me);
       } else {
-         if (error) {
+         
         setUser(null);
-         }
+         
       }
     }
-  }, [data, loading,error, setUser]);
+  }, [data, loading, setUser]);
 
   useEffect(() => {
     if (error) {

@@ -5,7 +5,7 @@ export const GET_ALL_USERS_QUERY = gql`
     users {
       id
       email
-      createdAt
+      
     }
   }
 `;
@@ -15,7 +15,7 @@ export const GET_USER_BY_ID_QUERY = gql`
     userById(id: $id) {
       id
       email
-      createdAt
+      
     }
   }
 `;
