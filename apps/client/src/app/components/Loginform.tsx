@@ -1,4 +1,3 @@
-// components/LoginForm.tsx
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -8,11 +7,14 @@ import { LOGIN_MUTATION } from "@/graphql/auth.gql";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { LoginMutationResult } from "@/lib/types/graphql";
 import { loginSchema } from "@/lib/validation/schemas";
+import { useRouter } from "next/navigation"; 
 import type { z } from "zod";
+
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
   const { setUser } = useAuth();
+  const router = useRouter(); 
   
   const [login, { loading, error }] = useMutation<LoginMutationResult>(LOGIN_MUTATION);
 
@@ -38,10 +40,14 @@ const LoginForm = () => {
 
       if (data?.login?.user) {
         setUser(data.login.user);
-        window.location.href = "/dashboard";
+        router.push("/dashboard"); 
       }
-    } catch (err:unknown) {
-     console.log("error is",err);
+    } catch (err: unknown) {
+      console.log("error is", err);
+      // Handle specific errors
+      if (err instanceof Error) {
+        setError('root', { message: err.message });
+      }
     }
   };
 

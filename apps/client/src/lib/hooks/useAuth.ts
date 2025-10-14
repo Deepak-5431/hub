@@ -8,13 +8,11 @@ import { MeQueryResult } from '../types/graphql'
 export const useAuth = () => {
   const { setUser, logout, user, isAuthenticated, isLoading } = useAuthStore();
 
-  const isAuthPage = typeof window !== 'undefined' && 
-    ['/login', '/register'].includes(window.location.pathname);
+  
 
   const { data, loading, error } = useQuery<MeQueryResult>(ME_QUERY, {
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
-    skip: isAuthPage,
   });
 
   useEffect(() => {
@@ -39,7 +37,7 @@ export const useAuth = () => {
   return {
     user,
     authenticated: !!user, 
-    isLoading: isAuthPage ? false : (loading || isLoading),
+    isLoading: loading || isLoading,
     setUser,
     logout,
   };
