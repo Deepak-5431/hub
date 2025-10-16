@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../core/prisma/prisma.service'; // Adjust path as needed
+import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CreateConversationInput } from './dto/create-conversation.input';
 import { SendMessageInput } from './dto/send-message.input';
-import { Conversation, Message } from '@prisma/client';
 
 @Injectable()
 export class ChatService {
   constructor(private prisma: PrismaService) {}
 
-  async createConversation(input: CreateConversationInput): Promise<Conversation> {
+  async createConversation(input: CreateConversationInput) {
+    // Input is already validated by DTO
     return this.prisma.conversation.create({
       data: {
         title: input.title,
@@ -24,7 +24,8 @@ export class ChatService {
     });
   }
 
-  async sendMessage(input: SendMessageInput, senderId: string): Promise<Message> {
+  async sendMessage(input: SendMessageInput, senderId: string) {
+    // Input validated by DTO, senderId from auth
     const message = await this.prisma.message.create({
       data: {
         content: input.content,
@@ -39,6 +40,7 @@ export class ChatService {
       }
     });
 
+    // Update conversation's last message
     await this.prisma.conversation.update({
       where: { id: input.conversationId },
       data: { 
@@ -51,7 +53,7 @@ export class ChatService {
     return message;
   }
 
-  async getUserConversations(userId: string): Promise<Conversation[]> {
+  async getUserConversations(userId: string) {
     return this.prisma.conversation.findMany({
       where: {
         participants: { some: { userId } }
@@ -67,24 +69,24 @@ export class ChatService {
     });
   }
 
-  async getConversationMessages(conversationId: string): Promise<Message[]> {
-    return this.prisma.message.findMany({
-      where: { conversationId },
-      include: { sender: true },
-      orderBy: { createdAt: 'asc' }
-    });
+  // TODO 1: Implement get conversation messages
+  async getConversationMessages(conversationId: string) {
+    // Your implementation here
+    // Get all messages for a conversation, ordered by creation time
+    // Include sender information
   }
 
-  // TODO 1: Implement message deletion (soft delete)
-  async deleteMessage(messageId: string, userId: string): Promise<boolean> {
+  // TODO 2: Implement mark messages as read
+  async markMessagesAsRead(conversationId: string, userId: string) {
     // Your implementation here
-    // Hint: Update message.deletedAt and verify user owns the message
-    return true;
+    // Update all messages in conversation to include userId in readBy array
+    // Only update messages that haven't been read by this user yet
   }
 
-  // TODO 2: Implement adding participants to existing conversation
-  async addParticipants(conversationId: string, userIds: string[]): Promise<Conversation> {
+  // TODO 3: Implement get unread messages count
+  async getUnreadCount(userId: string) {
     // Your implementation here
-    // Hint: Create multiple participant records
+    // Count messages where user is participant but hasn't read the message
+    // Hint: Count messages where readBy array doesn't include userId
   }
 }

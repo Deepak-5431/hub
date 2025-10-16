@@ -1,63 +1,51 @@
-// chat.resolver.ts
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { CreateConversationInput } from './dto/create-conversation.input';
 import { SendMessageInput } from './dto/send-message.input';
 
-// GraphQL types
-@ObjectType()
-class Conversation {
-  @Field() id: string;
-  @Field({ nullable: true }) title?: string;
-  @Field() type: string;
-  @Field() createdAt: Date;
-}
-
-@ObjectType()
-class Message {
-  @Field() id: string;
-  @Field() content: string;
-  @Field() senderId: string;
-  @Field() createdAt: Date;
-}
-
-@Resolver(() => Conversation)
+@Resolver()
 export class ChatResolver {
   constructor(private chatService: ChatService) {}
 
-  // Mutation: CREATE new conversation
-  @Mutation(() => Conversation)
+  // Working mutations
+  @Mutation(returns => Object)
   async createConversation(@Args('input') input: CreateConversationInput) {
     return this.chatService.createConversation(input);
   }
 
-  // Mutation: SEND message to conversation
-  @Mutation(() => Message)
+  @Mutation(returns => Object)
   async sendMessage(@Args('input') input: SendMessageInput) {
-    const senderId = 'mock-user-id'; // TODO: Get from auth
+    const senderId = 'mock-user-id'; // TODO: Get from auth context
     return this.chatService.sendMessage(input, senderId);
   }
 
-  // Query: GET user's conversations
-  @Query(() => [Conversation])
+  // Working query
+  @Query(returns => [Object])
   async getConversations(@Args('userId') userId: string) {
     return this.chatService.getUserConversations(userId);
   }
 
-  // TODO 3: Query to get messages in conversation
-  @Query(() => [Message])
+  // TODO 4: Implement get conversation messages query
+  @Query(returns => [Object])
   async getConversationMessages(@Args('conversationId') conversationId: string) {
     // Your implementation here
-    // Hint: Call chatService.getConversationMessages
+    // Call chatService.getConversationMessages
   }
 
-  // TODO 4: Mutation to mark conversation as read
-  @Mutation(() => Boolean)
+  // TODO 5: Implement mark as read mutation
+  @Mutation(returns => Boolean)
   async markAsRead(
     @Args('conversationId') conversationId: string,
     @Args('userId') userId: string
   ) {
     // Your implementation here
-    // Hint: Call chatService.markMessagesAsRead
+    // Call chatService.markMessagesAsRead
+  }
+
+  // TODO 6: Implement unread count query
+  @Query(returns => Number)
+  async getUnreadCount(@Args('userId') userId: string) {
+    // Your implementation here
+    // Call chatService.getUnreadCount
   }
 }
