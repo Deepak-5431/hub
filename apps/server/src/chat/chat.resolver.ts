@@ -1,61 +1,63 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+// chat.resolver.ts
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { CreateConversationInput } from './dto/create-conversation.input';
 import { SendMessageInput } from './dto/send-message.input';
-import { Conversation, Message } from '@prisma/client';
 
-@Resolver('Chat')
+// GraphQL types
+@ObjectType()
+class Conversation {
+  @Field() id: string;
+  @Field({ nullable: true }) title?: string;
+  @Field() type: string;
+  @Field() createdAt: Date;
+}
+
+@ObjectType()
+class Message {
+  @Field() id: string;
+  @Field() content: string;
+  @Field() senderId: string;
+  @Field() createdAt: Date;
+}
+
+@Resolver(() => Conversation)
 export class ChatResolver {
   constructor(private chatService: ChatService) {}
 
+  // Mutation: CREATE new conversation
   @Mutation(() => Conversation)
-  async createConversation(
-    @Args('input') input: CreateConversationInput
-  ): Promise<Conversation> {
+  async createConversation(@Args('input') input: CreateConversationInput) {
     return this.chatService.createConversation(input);
   }
 
+  // Mutation: SEND message to conversation
   @Mutation(() => Message)
-  async sendMessage(
-    @Args('input') input: SendMessageInput,
-    @Context() context: any
-  ): Promise<Message> {
-    const senderId = 'mock-user-id'; // TODO: Replace with context.req.user.id
+  async sendMessage(@Args('input') input: SendMessageInput) {
+    const senderId = 'mock-user-id'; // TODO: Get from auth
     return this.chatService.sendMessage(input, senderId);
   }
 
+  // Query: GET user's conversations
   @Query(() => [Conversation])
-  async getConversations(
-    @Args('userId') userId: string
-  ): Promise<Conversation[]> {
+  async getConversations(@Args('userId') userId: string) {
     return this.chatService.getUserConversations(userId);
   }
 
+  // TODO 3: Query to get messages in conversation
   @Query(() => [Message])
-  async getConversationMessages(
-    @Args('conversationId') conversationId: string
-  ): Promise<Message[]> {
-    return this.chatService.getConversationMessages(conversationId);
+  async getConversationMessages(@Args('conversationId') conversationId: string) {
+    // Your implementation here
+    // Hint: Call chatService.getConversationMessages
   }
 
-  // TODO 5: Implement this mutation - Mark conversation as read
+  // TODO 4: Mutation to mark conversation as read
   @Mutation(() => Boolean)
-  async markConversationAsRead(
+  async markAsRead(
     @Args('conversationId') conversationId: string,
     @Args('userId') userId: string
-  ): Promise<boolean> {
+  ) {
     // Your implementation here
-    // Hint: Use chatService.markMessagesAsRead
-    return true;
-  }
-
-  // TODO 6: Implement this query - Get unread messages count
-  @Query(() => Number)
-  async getUnreadMessagesCount(
-    @Args('userId') userId: string
-  ): Promise<number> {
-    // Your implementation here
-    // Hint: Use chatService.getUnreadCount
-    return 0;
+    // Hint: Call chatService.markMessagesAsRead
   }
 }
