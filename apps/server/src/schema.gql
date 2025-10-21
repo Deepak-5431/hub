@@ -38,6 +38,9 @@ type Query {
   me: UserEntity!
   users(skip: Float = 0, take: Float = 10): [UserEntity!]!
   userById(id: String!): UserEntity!
+  getConversations(userId: String!): [String!]!
+  getConversationMessages(conversationId: String!): [String!]!
+  getUnreadCount(userId: String!): Float!
 }
 
 type Mutation {
@@ -49,6 +52,9 @@ type Mutation {
   login(loginInput: LoginInput!): AuthResponseDto!
   refreshTokens(refreshTokenInput: RefreshTokenInput!): AuthResponseDto!
   logout: Boolean!
+  createConversation(input: CreateConversationInput!): String!
+  sendMessage(input: SendMessageInput!): String!
+  markAsRead(conversationId: String!, userId: String!): Boolean!
 }
 
 input CreateUserInput {
@@ -70,4 +76,17 @@ input LoginInput {
 
 input RefreshTokenInput {
   refreshToken: String!
+}
+
+input CreateConversationInput {
+  participantIds: [String!]!
+  title: String
+  type: String
+}
+
+input SendMessageInput {
+  conversationId: String!
+  content: String!
+  type: String = "TEXT"
+  repliedToId: String
 }

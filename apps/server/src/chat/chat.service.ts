@@ -8,8 +8,7 @@ export class ChatService {
   constructor(private prisma: PrismaService) {}
 
   async createConversation(input: CreateConversationInput) {
-    // Input is already validated by DTO
-    return this.prisma.conversation.create({
+    const result = await this.prisma.conversation.create({
       data: {
         title: input.title,
         type: input.participantIds.length > 2 ? 'GROUP' : 'DIRECT',
@@ -22,6 +21,8 @@ export class ChatService {
         messages: { orderBy: { createdAt: 'desc' }, take: 1 }
       }
     });
+
+    return JSON.stringify(result);
   }
 
   async sendMessage(input: SendMessageInput, senderId: string) {

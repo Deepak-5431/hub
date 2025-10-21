@@ -7,29 +7,25 @@ import { SendMessageInput } from './dto/send-message.input';
 export class ChatResolver {
   constructor(private chatService: ChatService) {}
 
-  // Working mutations
-  @Mutation(returns => Object)
+  @Mutation(returns => String)
   async createConversation(@Args('input') input: CreateConversationInput) {
     return this.chatService.createConversation(input);
   }
 
-  @Mutation(returns => Object)
+  @Mutation(returns => String)
   async sendMessage(@Args('input') input: SendMessageInput) {
-    const senderId = 'mock-user-id'; // TODO: Get from auth context
+    const senderId = 'mock-user-id'; 
     return this.chatService.sendMessage(input, senderId);
   }
 
-  // Working query
-  @Query(returns => [Object])
+  @Query(returns => [String])
   async getConversations(@Args('userId') userId: string) {
     return this.chatService.getUserConversations(userId);
   }
 
-  // TODO 4: Implement get conversation messages query
-  @Query(returns => [Object])
+  @Query(returns => [String])
   async getConversationMessages(@Args('conversationId') conversationId: string) {
-    // Your implementation here
-    // Call chatService.getConversationMessages
+
   }
 
   // TODO 5: Implement mark as read mutation
@@ -42,7 +38,6 @@ export class ChatResolver {
     // Call chatService.markMessagesAsRead
   }
 
-  // TODO 6: Implement unread count query
   @Query(returns => Number)
   async getUnreadCount(@Args('userId') userId: string) {
     // Your implementation here
