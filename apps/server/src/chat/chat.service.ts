@@ -70,18 +70,25 @@ export class ChatService {
     });
   }
 
-  // TODO 1: Implement get conversation messages
   async getConversationMessages(conversationId: string) {
-    // Your implementation here
-    // Get all messages for a conversation, ordered by creation time
-    // Include sender information
+   return this.prisma.message.findMany({
+    where: {conversationId},
+    include:{sender:true},
+    orderBy:{createdAt:'asc'}
+   })
   }
 
-  // TODO 2: Implement mark messages as read
   async markMessagesAsRead(conversationId: string, userId: string) {
-    // Your implementation here
-    // Update all messages in conversation to include userId in readBy array
-    // Only update messages that haven't been read by this user yet
+    const { count } = await this.prisma.message.updateMany({
+    where: {
+      conversationId,
+      NOT: { readBy: { has: userId } },
+      senderId: { not: userId }
+    },
+    data: { readBy: { push: userId } }
+  });
+  
+  return count;
   }
 
   // TODO 3: Implement get unread messages count

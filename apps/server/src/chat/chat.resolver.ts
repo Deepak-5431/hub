@@ -25,22 +25,19 @@ export class ChatResolver {
 
   @Query(returns => [String])
   async getConversationMessages(@Args('conversationId') conversationId: string) {
-
+     return this.chatService.getConversationMessages(conversationId);
   }
 
-  // TODO 5: Implement mark as read mutation
   @Mutation(returns => Boolean)
   async markAsRead(
     @Args('conversationId') conversationId: string,
     @Args('userId') userId: string
   ) {
-    // Your implementation here
-    // Call chatService.markMessagesAsRead
+   return this.chatService.markMessagesAsRead(conversationId,userId)
   }
 
   @Query(returns => Number)
   async getUnreadCount(@Args('userId') userId: string) {
-    // Your implementation here
-    // Call chatService.getUnreadCount
+   return this.chatService.getUnreadCount(userId)
   }
 }
