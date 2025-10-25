@@ -91,10 +91,24 @@ export class ChatService {
   return count;
   }
 
-  // TODO 3: Implement get unread messages count
   async getUnreadCount(userId: string) {
-    // Your implementation here
-    // Count messages where user is participant but hasn't read the message
-    // Hint: Count messages where readBy array doesn't include userId
+    const unread = await this.prisma.message.count({
+    where: {
+      NOT: { 
+        readBy: { 
+          has: userId 
+        } 
+      },
+      conversation: {
+        participants: {
+          some: {
+            id: userId
+          }
+        }
+      },
+      senderId: { not: userId }
+    }
+  });
+    return unread;
   }
 }
