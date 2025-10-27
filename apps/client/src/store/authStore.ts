@@ -6,7 +6,7 @@ interface User{
   email: string;
   name?:string,
   createdAt: string;
-  updatedAt: string
+  updatedAt: string;
 }
 
 interface AuthState {
